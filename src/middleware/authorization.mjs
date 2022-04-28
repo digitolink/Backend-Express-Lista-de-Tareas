@@ -14,6 +14,7 @@ function decodeAuthBasic(header) {
 
 export function authMiddleware(req, res, next) {
     try {
+        console.log(req.headers.authorization);
         const { method, username, password } = decodeAuthBasic(req.headers.authorization);
         if (method != "Basic") 
             throw "No se está usando el método Basic para la autenticacion";
@@ -26,6 +27,6 @@ export function authMiddleware(req, res, next) {
             throw "usuario o password no valido"
 
     }catch(error){
-        res.send("Se ha producido un error en la autenticación");
+        res.send(error);
     }
 }
