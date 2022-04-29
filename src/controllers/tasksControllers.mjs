@@ -1,5 +1,19 @@
 import { tasks } from "../models/tasksModels.mjs";
 
+export function getOneTask(req,res){
+    try{
+        const task = tasks.find(
+            item => item.id === parseInt(req.params.id)
+        )
+        if (task) res.json(task);
+        else res.sendStatus(404);
+            
+    }catch(err){
+        res.sendStatus(400);
+    }
+}
+
+
 export function getTasks(req, res) {
     try {
         res.json(tasks);
