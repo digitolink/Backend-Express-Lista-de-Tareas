@@ -1,12 +1,29 @@
+import { db } from "../backend/db.mjs";
 import { tasks } from "../models/tasksModels.mjs";
 
 export function getOneTask(req,res){
     try{
+        //Obtenemos una tarea de la base de datos
+        db.get(`
+            SELECT id, description, done FROM tareas
+            WHERE id=`+ parseInt(req.params.id)
+        , (error, data) =>{
+                if (error){ 
+                    res.sendStatus(500);
+                    throw "Error en la obtención de la tarea";
+                }
+                else{
+                    res.json(data);
+                }
+        })
+
+        /*//Obtenemos una tarea desde un array
         const task = tasks.find(
             item => item.id === parseInt(req.params.id)
         )
         if (task) res.json(task);
         else res.sendStatus(404);
+        */
             
     }catch(err){
         res.sendStatus(400);
@@ -16,7 +33,22 @@ export function getOneTask(req,res){
 
 export function getTasks(req, res) {
     try {
+        /*//Obtenemos todas las tareas de un array
         res.json(tasks);
+        */
+       //Obtenemos todas las tareas de la base de datos
+        db.all(`
+            SELECT id, description, done FROM tareas
+        `, (error, data) =>{
+                if (error){ 
+                    res.sendStatus(500);
+                    throw "Error en la obtención de las tareas de la base de datos";
+                }
+                else{
+                    res.json(data);
+                }
+        })
+
     } catch (err) {
         console.error(err);
         res.send("No fue posible listar tareas del servidor");
@@ -25,8 +57,23 @@ export function getTasks(req, res) {
 
 export function postTasks(req, res) {
     try {
+        /*// Añadimos una tarea al array
         tasks.push(req.body);
         res.send("Se ha añadido la tarea");
+        */
+       //Añadimos una tarea a la base de datos
+       const {description,done} =req.body;
+       db.run(`
+            INSERT INTO tareas(description, done) 
+            VALUES("` + description + `",` + done + `)`,
+            (error) => {
+                if (error){
+                    console.error(error);
+                    res.sendStatus(500);
+                }
+                else res.sendStatus(201);
+            }           
+            )
     } catch (err) {
         console.error(err);
         res.send("No fue posible añadir la tarea en el servidor");
@@ -35,12 +82,31 @@ export function postTasks(req, res) {
 
 export function putTasks(req, res) {
     try {
+        /*//Actualizamos tarea del array 
         const updatedTask = req.body;
         const oldTaskIdx = tasks.findIndex(
             item => item.id === updatedTask.id
         )
         tasks[oldTaskIdx] = updatedTask;
         res.send("Se ha actualizado la tarea");
+        */
+       //Actualizamos tarea de la base de datos
+        db.run(`
+            UPDATE tareas
+            SET id ="` + req.body.id +`"
+            description ="`+ req.body.description + `"
+            done ="` + req.body.done + `"
+            userID ="` + req.body.userID + `"
+        `, (error,data) => {
+            if (error)
+                res.send("Error en la actualización");
+            else
+                res.send("Actulizada la fila");
+            }
+        
+        )
+        
+
     } catch (err) {
         console.error(err);
         res.send("No fue posible actualizar la tarea en el servidor");        
@@ -50,12 +116,26 @@ export function putTasks(req, res) {
 
 export function deleteTasks(req, res) {
     try {
+        /* //Borramos una tarea del array
         const updatedTask = req.body;
         const oldTaskIdx = tasks.findIndex(
             item => item.id === updatedTask.id
         )
         tasks.splice(oldTaskIdx, 1);
-        res.send("Se ha borrado la tarea");        
+        res.send("Se ha borrado la tarea");
+        */
+       // Borramos una tarea de la base de datos
+        db.run(`
+            DELETE FROM tareas
+            WHERE id=` + parseInt(req.body.id)
+            ,(error,data) => {
+                if (error)
+                    res.send("Error en el borrado");
+                else
+                    res.send("la tarea fue borrada de la base de datos");
+            }
+        );
+
     } catch (err) {
         console.error(err);
         res.send("No fue posible borrar la tarea en el servidor");

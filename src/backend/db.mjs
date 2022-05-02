@@ -1,9 +1,10 @@
-import { sqlite3 } from "sqlite3";
 
-const db = new sqlite.Database("./tasks.db", (err) => {
+import sqlite3 from "sqlite3";
+export const db = new sqlite3.Database("./tasks.db", (err) => {
     if (err) {
-        console.error(err.message);
+        throw err.message;
     }
+    console.log("Connected to the database");
 });
 
 db.run(`
@@ -11,7 +12,7 @@ db.run(`
         IF NOT EXISTS
         users(
             id INTEGER PRIMARY KEY,
-            name TEXT NOT NULL
+            name TEXT NOT NULL,
             password TEXT NOT NULL
         )
 
@@ -22,17 +23,14 @@ db.run(`
         IF NOT EXISTS
         tareas(
             id INTEGER PRIMARY KEY,
-            description TEXT NOT NULL
-            done INTEGER NOT NULL
+            description VARCHAR(100) NOT NULL,
+            done INTEGER NOT NULL,
+            userID INTEGER,
             FOREIGN KEY (userID)
                 REFERENCES users(id)
                     ON DELETE CASCADE
+                    ON UPDATE CASCADE
                     
         )
 
 `);
-
-export function insertUser(userObject, callback){
-
-}
-
