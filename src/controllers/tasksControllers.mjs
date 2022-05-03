@@ -62,10 +62,10 @@ export function postTasks(req, res) {
         res.send("Se ha añadido la tarea");
         */
        //Añadimos una tarea a la base de datos
-       const {description,done} =req.body;
        db.run(`
             INSERT INTO tareas(description, done) 
-            VALUES("` + description + `",` + done + `)`,
+            VALUES(?, ?)`,
+            req.body.description, req.body.done,          
             (error) => {
                 if (error){
                     console.error(error);
@@ -91,13 +91,14 @@ export function putTasks(req, res) {
         res.send("Se ha actualizado la tarea");
         */
        //Actualizamos tarea de la base de datos
+       const {id, description, done} = req.body;
         db.run(`
             UPDATE tareas
-            SET id ="` + req.body.id +`"
-            description ="`+ req.body.description + `"
-            done ="` + req.body.done + `"
-            userID ="` + req.body.userID + `"
-        `, (error,data) => {
+            SET id =` + id +`,
+            description ="`+ description + `",
+            done =` + done 
+        , (error,data) => {
+            console.error(error);
             if (error)
                 res.send("Error en la actualización");
             else
