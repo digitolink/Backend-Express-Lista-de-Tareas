@@ -12,8 +12,8 @@ db.run(`
         IF NOT EXISTS
         users(
             id INTEGER PRIMARY KEY,
-            name TEXT NOT NULL,
-            password TEXT NOT NULL
+            name VARCHAR(100) NOT NULL UNIQUE,
+            password VARCHAR(100) NOT NULL
         )
 
 `);

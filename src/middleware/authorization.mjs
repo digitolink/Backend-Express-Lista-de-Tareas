@@ -1,4 +1,5 @@
-import { users } from "../models/userModels.mjs";
+import { db } from "../backend/db.mjs";
+//import { users } from "../models/userModels.mjs";
 
 function decodeAuthBasic(header) {
     try {
@@ -18,13 +19,20 @@ export function authMiddleware(req, res, next) {
         const { method, username, password } = decodeAuthBasic(req.headers.authorization);
         if (method != "Basic") 
             throw "No se está usando el método Basic para la autenticacion";
-        const user = users.find(
+        /*//Buscamos el usuario en el array
+            const user = users.find(
             item => item.name===username && item.password === password
+        )*/
+        //Buscamos el usuario en la base de datos
+        db.get(`
+            SELECT * FROM users WHERE name = ${username}
+            AND password= ${password}`, 
+            (error, data) => {
+                if (error) res.sendStatus(500);
+                else if (data) next;
+                else res.sendStatus(401);
+            }
         )
-        if(user)
-            next()
-        else
-            throw "usuario o password no valido"
 
     }catch(error){
         res.send(error);
