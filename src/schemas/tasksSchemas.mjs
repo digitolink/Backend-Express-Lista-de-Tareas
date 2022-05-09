@@ -11,7 +11,8 @@ export const newTaskSchema = {
             type: "boolean"
         }
     },
-    adictionalProperties: false
+    adictionalProperties: false,
+    required: ["description", "done"]
 }
 
 export const TaskSchema = {
@@ -33,7 +34,8 @@ export const TaskSchema = {
             type: "boolean"
         },
     },
-    adictionalProperties: false
+    adictionalProperties: false,
+    required: ["id", "description", "done"]
 }
 
 export const deleteTaskSchema = {
@@ -46,5 +48,6 @@ export const deleteTaskSchema = {
             minimum: 0
         }  
     },
-    adictionalProperties: false
+    adictionalProperties: false,
+    required: ["id"]
 }
