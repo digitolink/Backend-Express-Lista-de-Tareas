@@ -9,11 +9,12 @@ export function getOneTask(req,res){
             WHERE id=`+ parseInt(req.params.id)
         , (error, data) =>{
                 if (error){ 
-                    res.sendStatus(500);
+                    res.send("Error al intentar consultar a la base de datos");
                     throw "Error en la obtención de la tarea";
                 }
                 else{
-                    res.json(data);
+                    if (data) res.json(data)
+                    else res.sendStatus(404)
                 }
         })
 
@@ -26,7 +27,7 @@ export function getOneTask(req,res){
         */
             
     }catch(err){
-        res.sendStatus(400);
+        res.send("Error al intentar ejecutar la consulta");
     }
 }
 
@@ -41,7 +42,7 @@ export function getTasks(req, res) {
             SELECT id, description, done FROM tareas
         `, (error, data) =>{
                 if (error){ 
-                    res.sendStatus(500);
+                    res.send("Error al intentar listar");
                     throw "Error en la obtención de las tareas de la base de datos";
                 }
                 else{

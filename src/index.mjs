@@ -20,8 +20,8 @@ try {
     app.use(express.json());
 
     app.post("/api/v0.0/users/", validatorFactory(userSchema), postUserController)
-    app.get("/api/v0.0/tasks/:id", validatorFactory(TaskSchema), authMiddleware, getOneTask);
-    app.get("/api/v0.0/tasks/", validatorFactory(TaskSchema), authMiddleware, getTasks);
+    app.get("/api/v0.0/tasks/:id", authMiddleware, getOneTask);
+    app.get("/api/v0.0/tasks/", authMiddleware, getTasks);
     app.post("/api/v0.0/task/", validatorFactory(TaskSchema), authMiddleware, postTasks);
     app.put("/api/v0.0/task/", validatorFactory(TaskSchema), authMiddleware, putTasks);
     app.delete("/api/v0.0/task/", validatorFactory(deleteTaskSchema), authMiddleware, deleteTasks);

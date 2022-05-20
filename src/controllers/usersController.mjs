@@ -17,7 +17,7 @@ export function postUserController(req, res) {
             ,req.body.name, req.body.password,
             
             (error) => {
-                if (error) res.sendStatus(500);
+                if (error) res.send("Error al crear el usuario");
                 else res.send("Usuario creado");
             }
         )

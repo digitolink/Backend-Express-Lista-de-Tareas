@@ -15,7 +15,6 @@ function decodeAuthBasic(header) {
 
 export function authMiddleware(req, res, next) {
     try {
-        console.log(req.headers.authorization);
         const { method, username, password } = decodeAuthBasic(req.headers.authorization);
         if (method != "Basic") 
             throw "No se está usando el método Basic para la autenticacion";
@@ -25,11 +24,11 @@ export function authMiddleware(req, res, next) {
         )*/
         //Buscamos el usuario en la base de datos
         db.get(`
-            SELECT * FROM users WHERE name = ${username}
-            AND password= ${password}`, 
+            SELECT * FROM users WHERE name = ?
+            AND password = ?`,[username, password], 
             (error, data) => {
-                if (error) res.sendStatus(500);
-                else if (data) next;
+                if (error) res.send("Error de autenticacion");
+                else if (data) next();
                 else res.sendStatus(401);
             }
         )
